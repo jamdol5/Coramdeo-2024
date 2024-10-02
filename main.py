@@ -48,7 +48,8 @@ st.set_page_config(page_title="Accounting System",
                    layout="wide")
 
 # Load the secret
-secret_file = st.secrets["accounting_data"]
+secret_file = st.secrets["accounting_data"]["data"]
+accounting_data = json.loads(secret_file)  # Parse the JSON string
 
 # Initialize DataManager with the secret file
 data_manager = DataManager(secret_file)

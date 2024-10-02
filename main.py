@@ -11,13 +11,18 @@ from utils.visualizations import (
 )
 
 from datetime import datetime
+import json
 
 # Set page config at the very beginning
 st.set_page_config(page_title="Accounting System",
                    page_icon="💼",
                    layout="wide")
 
-data_manager = DataManager()
+# Load the secret
+secret_file = st.secrets["accounting_data"]
+
+# Initialize DataManager with the secret file
+data_manager = DataManager(secret_file)
 
 def main():
     st.sidebar.title("Navigation")

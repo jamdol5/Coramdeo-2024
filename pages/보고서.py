@@ -10,8 +10,12 @@ from utils.visualizations import (
     create_year_over_year_comparison_chart
 )
 from datetime import datetime
+import json
 
-data_manager = DataManager()
+# Load the secret
+secret_file = st.secrets["accounting_data"]
+
+data_manager = DataManager(secret_file)
 
 def reports_page():
     st.title("예산 보고서")

@@ -52,7 +52,7 @@ secret_file = st.secrets["accounting_data"]["data"]
 accounting_data = json.loads(secret_file)  # Parse the JSON string
 
 # Initialize DataManager with the secret file
-data_manager = DataManager(secret_file)
+data_manager = DataManager(accounting_data)
 
 def main():
     st.sidebar.title("Navigation")

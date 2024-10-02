@@ -1,31 +1,36 @@
 import json
-import os
 from datetime import datetime
 
 class DataManager:
-    #this class is used to manage the data in the accounting_data.json file
-    def __init__(self, filename="data/accounting_data.json"):
-        self.filename = filename
-        self.data = self.load_data()
-        self.subcategories = ["Food", "Supplies","Clothing","Transportation","Rent","Equipment", "Miscellaneous"]
+    # This class is used to manage the data in-memory instead of from a file
+    def __init__(self, data):
+        """
+        Initialize DataManager with the provided in-memory data (from Streamlit secrets).
+        The `data` should be a dictionary representing the accounting data.
+        """
+        self.data = data
+        self.subcategories = ["Food", "Supplies", "Clothing", "Transportation", "Rent", "Equipment", "Miscellaneous"]
 
-    #this method is used to load the data from the accounting_data.json file
+    # This method is no longer needed to load data from a file but we keep it for compatibility
     def load_data(self):
-        if os.path.exists(self.filename):
-            with open(self.filename, "r") as f:
-                return json.load(f)
-        else:
-            return {"revenues": {}, "costs": {}}
-    
-    #this method is used to save the data to the accounting_data.json file
-    def save_data(self):
-        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
-        with open(self.filename, "w") as f:
-            json.dump(self.data, f, indent=2)
+        """
+        Returns the already loaded in-memory data.
+        Since data is passed during initialization, we return that.
+        """
+        return self.data
 
-    #this method is used to get the revenues from the accounting_data.json file
+    # Since we are working with in-memory data, there's no file to save
+    def save_data(self):
+        """
+        This method would normally save to a file, but since we're working with in-memory data,
+        this does not perform any action.
+        """
+        # In a real scenario, you might want to log or handle in-memory data persistence if needed.
+        pass
+
+    # This method is used to get the revenues from the in-memory data
     def get_revenues(self, year=None):
-        revenues = self.data.get("revenues",{})
+        revenues = self.data.get("revenues", {})
         if year:
             return revenues.get(str(year), [])
         else:
@@ -33,8 +38,8 @@ class DataManager:
             for year_revenues in revenues.values():
                 all_revenues.extend(year_revenues)
             return all_revenues
-    
-     # This method is used to add a revenue to the accounting_data.json file
+
+    # This method is used to add a revenue to the in-memory data
     def add_revenue(self, revenue):
         year = str(datetime.fromisoformat(revenue["date"]).year)
         if year not in self.data["revenues"]:
@@ -42,20 +47,20 @@ class DataManager:
         self.data["revenues"][year].append(revenue)
         self.save_data()
 
- # This method is used to remove a revenue from the accounting_data.json file
+    # This method is used to remove a revenue from the in-memory data
     def remove_revenue(self, year, index):
         year_str = str(year)
         if year_str in self.data["revenues"] and 0 <= index < len(self.data["revenues"][year_str]):
             del self.data["revenues"][year_str][index]
             self.save_data()
 
-    #this method is used to get the costs from the accounting_data.json file
+    # This method is used to get the costs from the in-memory data
     def get_costs(self, year=None):
         if year:
-            return self.data["costs"].get(str(year),{})
+            return self.data["costs"].get(str(year), {})
         return self.data["costs"]
 
-    #this method is used to add a cost category to the accounting_data.json file
+    # This method is used to add a cost event category to the in-memory data
     def add_event(self, event, year):
         year = str(year)
         if year not in self.data["costs"]:
@@ -64,14 +69,14 @@ class DataManager:
             self.data["costs"][year][event] = {subcategory: [] for subcategory in self.subcategories}
             self.save_data()
 
-    #this method is used to remove a cost category from the accounting_data.json file
-    def remove_event(self,event,year):
+    # This method is used to remove a cost event category from the in-memory data
+    def remove_event(self, event, year):
         year = str(year)
         if year in self.data["costs"] and event in self.data["costs"][year]:
             del self.data["costs"][year][event]
             self.save_data()
 
-    #this method is used to add a cost to the accounting_data.json file
+    # This method is used to add a cost to the in-memory data
     def add_cost(self, event, subcategory, cost):
         year = str(datetime.fromisoformat(cost["date"]).year)
         if year not in self.data["costs"]:
@@ -82,9 +87,8 @@ class DataManager:
             self.data["costs"][year][event][subcategory] = []
         self.data["costs"][year][event][subcategory].append(cost)
         self.save_data()
-        
-    #this method is used to remove a cost from the accounting_data.json file
+
+    # This method is used to remove a cost from the in-memory data
     def remove_cost(self, year, event, subcategory, index):
         del self.data["costs"][str(year)][event][subcategory][index]
         self.save_data()
-

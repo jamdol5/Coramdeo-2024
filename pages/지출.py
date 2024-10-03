@@ -1,8 +1,13 @@
 import streamlit as st
 import pandas as pd
 from utils.data_manager import DataManager
+import json
 
-data_manager = DataManager()
+# Fetch the data from Streamlit secrets
+data = json.loads(st.secrets["accounting_data"]["data"])
+
+# Initialize the DataManager with the fetched data
+data_manager = DataManager(data)
 
 def costs_page():
     st.title('지출 관리')

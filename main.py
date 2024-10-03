@@ -16,8 +16,8 @@ def check_password():
     def password_entered():
         """Checks whether a password entered by the user is correct."""
         if (
-            st.session_state["username"] == st.secrets.get("username")
-            and st.session_state["password"] == st.secrets.get("password")
+            st.session_state["username"] == st.secrets["credentials"]["username"]
+            and st.session_state["password"] == st.secrets["credentials"]["password"]
         ):
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # don't store password
@@ -48,15 +48,22 @@ st.set_page_config(page_title="Accounting System",
                    layout="wide")
 
 # Load the secret
-secret_file = st.secrets["accounting_data"]["data"]
-accounting_data = json.loads(secret_file)  # Parse the JSON string
+try:
+    secret_file = st.secrets["accounting_data"]["data"]
+    accounting_data = json.loads(secret_file)  # Parse the JSON string
+except json.JSONDecodeError as e:
+    st.error(f"Failed to load accounting data: {e}")
+    accounting_data = {"revenues": {}, "costs": {}}
 
 # Initialize DataManager with the secret file
 data_manager = DataManager(accounting_data)
 
 def main():
+    if not check_password():
+        return
+
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["전체보기"]) #, "예산", "지출", "보고서"]
+    page = st.sidebar.radio("Go to", ["전체보기"])
 
     if page == "전체보기":
         overview_page()
@@ -131,7 +138,10 @@ def overview_page():
         year_data.append({"Year": year, "Revenue": year_revenues, "Costs": year_costs, "Net": year_revenues - year_costs})
     
     df_year_breakdown = pd.DataFrame(year_data)
-    st.dataframe(df_year_breakdown)
+    if df_year_breakdown.empty:
+        st.write("No data available for the selected years.")
+    else:
+        st.dataframe(df_year_breakdown)
 
 if __name__ == "__main__":
     main()

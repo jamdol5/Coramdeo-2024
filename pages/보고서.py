@@ -14,8 +14,9 @@ import json
 
 # Load the secret and initialize DataManager
 try:
-    secret_file = json.loads(st.secrets["accounting_data"]["data"])  # Parse the JSON data
-    data_manager = DataManager(secret_file)
+    secret_file = st.secrets["accounting_data"]["data"]
+    accounting_data = json.loads(secret_file)  # Parse the JSON string
+    data_manager = DataManager(accounting_data)
 except KeyError:
     st.error("Unable to load accounting data. Please check the Streamlit secrets configuration.")
     st.stop()

@@ -254,5 +254,5 @@ def reports_page():
         csv = df_filtered.to_csv(index=False)
         st.download_button(label="CSV 다운로드", data=csv, file_name="financial_report.csv", mime="text/csv")
 
-if __name__ == "__main__":
-    reports_page()
+#if __name__ == "__main__":
+#    reports_page()

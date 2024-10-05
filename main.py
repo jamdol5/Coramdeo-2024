@@ -5,13 +5,7 @@ from components.예산 import revenue_page
 from components.지출 import costs_page
 from components.보고서 import reports_page
 from utils.data_manager import DataManager
-from utils.visualizations import (
-    create_monthly_summary_chart,
-    create_revenue_trend_chart,
-    create_cost_trend_chart,
-    create_cumulative_balance_chart,
-    create_year_over_year_comparison_chart
-)
+
 
 def check_password():
     """Returns `True` if the user had the correct password."""

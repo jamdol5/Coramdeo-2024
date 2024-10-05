@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from components.예산 import revenue_page
+from components.지출 import costs_page
+from components.보고서 import reports_page
 from utils.data_manager import DataManager
 from utils.visualizations import (
     create_monthly_summary_chart,
@@ -63,7 +66,7 @@ def main():
         return
 
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["전체보기"]) #, "예산", "지출", "보고서"]
+    page = st.sidebar.radio("Go to", ["전체보기", "예산", "지출", "보고서"])
 
     if page == "전체보기":
         overview_page()
@@ -150,11 +153,11 @@ def overview_page():
         st.dataframe(df_year_breakdown)
         
 def revenue_page():
-    from pages.예산 import revenue_page
+    from components.예산 import revenue_page
     revenue_page()
 
 def costs_page():
-    from pages.지출 import costs_page
+    from components.지출 import costs_page
     costs_page()
 
 def reports_page():
